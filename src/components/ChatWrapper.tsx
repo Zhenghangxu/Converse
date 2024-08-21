@@ -1,8 +1,10 @@
 "use client";
 
 import { useChat } from "ai/react";
+import { useState } from "react";
 import { Messages } from "./Messages";
 import { Icon } from "@iconify/react";
+import NavBar from "@/components/navBar";
 
 export const ChatWrapper = ({
   sessionId,
@@ -11,27 +13,40 @@ export const ChatWrapper = ({
   sessionId: string;
   initialMessages: any[];
 }) => {
+  const inputHeight = 120;
   const { messages, handleInputChange, handleSubmit, input } = useChat({
     api: "/api/chat-stream",
     body: { sessionId },
     initialMessages,
   });
+
   return (
-    <div className="relative min-h-full dark:bg-zinc-900 bg-zinc-200 flex divide-y dark:divide-zinc-700 divide-zinc-300 flex-col justify-between gap-2">
-      <div className="flex-1 text-black dark:bg-zinc-800 justify-between flex flex-col pb-[103px]">
-        <Messages messages={messages} />
+    <div className="relative min-h-full dark:bg-zinc-800 bg-zinc-200 flex  flex-col justify-between">
+      <NavBar sessionId={sessionId} />
+      <div
+        className={`flex-1 text-black dark:bg-zinc-800 bg-gray-100 justify-between flex flex-col`}
+        style={{
+          paddingBottom: `${inputHeight * 1.1}px`,
+        }}
+      >
+        <Messages messages={messages}/>
       </div>
-      <div className="w-full fixed bottom-0 left-0 max-h-[103px] right-0 bg-zinc-100 dark:bg-zinc-800">
+      <div
+        className={`w-full fixed bottom-0 left-0 right-0 bg-white/75 dark:bg-gray-900/75 backdrop-blur-md`}
+        style={{
+          maxHeight: `${inputHeight * 1.3}px`,
+        }}
+      >
         <div className="container mx-auto ">
           <form
             onSubmit={handleSubmit}
             className="px-2 py-3 flex flex-row items-start gap-3"
           >
-            <textarea
-              rows={6}
-              className="text-black resize-none max-h-[10vh] shadow-md dark:text-white bg-transparent rounded-md border-[1px] border-solid focus:border-gray-800  dark:border-gray-700 w-full h-full p-3"
+            <input
+              className="text-black resize-none max-h-[10vh] shadow-md dark:text-white bg-transparent rounded-3xl border-[1px] border-solid focus:border-gray-800  dark:border-gray-700 w-full h-full py-3 px-5"
               onChange={handleInputChange}
               value={input}
+              maxLength={3000}
               placeholder="Enter Your Message Here..."
             />
             <button
@@ -51,5 +66,3 @@ export const ChatWrapper = ({
     </div>
   );
 };
-
-

@@ -7,7 +7,7 @@ interface MessageProps {
   content: string;
   isUserMessage: boolean;
 }
-export const Message = ({ content, isUserMessage }: MessageProps) => {
+export const Message = ({ content, isUserMessage}: MessageProps) => {
   const [parsedHTML, setParsedHTML] = useState("Parsing HTML...");
   useEffect(() => {
     (async () => {
@@ -16,6 +16,9 @@ export const Message = ({ content, isUserMessage }: MessageProps) => {
       setParsedHTML(cleaned);
     })();
   }, [content]);
+  useEffect(() => {
+    // 1. check if 
+  }, []);
   return (
     <div className={"p-6"}>
       <div
