@@ -30,7 +30,7 @@ export const Messages = ({ messages }: MessageProps) => {
   return (
     // <ScrollShadow size={20} className="h-[85vh] w-screen" hideScrollBar>
       <div
-        className="flex min-h-screen flex-1 flex-col bg-gray-100 dark:bg-zinc-800 overflow-y-auto"
+        className="flex min-h-[calc(100vh-64px-120px)] flex-1 flex-col bg-gray-100 dark:bg-zinc-800 overflow-y-auto"
         ref={messagesContainer}
       >
         {messages.length > 0 ? (

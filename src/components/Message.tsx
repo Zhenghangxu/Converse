@@ -26,7 +26,7 @@ export const Message = ({ content, isUserMessage}: MessageProps) => {
           isUserMessage ? "flex-row-reverse" : ""
         } gap-2.5`}
       >
-        <div className="bg-white dark:bg-gray-500 p-3 rounded-[50%]">
+        <div className="bg-white dark:bg-gray-500 p-3 rounded-[50%] border-neutral-300/50 border-2">
           <Icon
             icon={`${
               isUserMessage

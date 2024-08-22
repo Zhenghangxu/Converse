@@ -6,7 +6,6 @@ export const ragChat = new RAGChat({
     apiKey: process.env.NEXT_PUBLIC_TOGETHER_AI_API_KEY,
   }),
   redis: redis,
-  streaming: true,
   debug: true,
   promptFn: ({ context, question, chatHistory }) =>
     `You are an AI Assistant designed to interact with users naturally. Avoid technical jargon unless it’s related to the context. Be concise and avoid filler. Avoid reapting what is already in the history.

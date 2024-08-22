@@ -1,16 +1,21 @@
-import { MoonIcon, SunIcon, BarChartIcon } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Button } from "@nextui-org/button";
-import { Switch } from "@nextui-org/react";
-import { useTheme } from "next-themes";
 import { Tabs, Tab } from "@nextui-org/react";
 import { Trash2 } from "lucide-react";
+import { BrainCircuit } from "lucide-react";
+import { NightModeToggle } from "./NightModeToggle";
+import { UIContext } from "@/app/_context/ChatContext";
 import { clearChatHistory } from "@/app/lib/api";
 
 // import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-export default function Component({sessionId}: {sessionId: string}) {
-  const { theme, setTheme } = useTheme();
+export default function Component({
+  sessionId,
+  reloadChat,
+}: {
+  sessionId: string;
+  reloadChat: any;
+}) {
   const [mounted, setMounted] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [buttonLabel, setButtonLabel] = useState("Clear History");
@@ -19,9 +24,11 @@ export default function Component({sessionId}: {sessionId: string}) {
     setButtonLabel("Clearing...");
     clearChatHistory(sessionId)
       .then(() => {
-        setButtonLoading(false);
         setButtonLabel("Cleared!");
-        window.location.reload();
+        reloadChat();
+        setTimeout(() => {
+          setButtonLabel("Clear History");
+        }, 1000);
       })
       .catch(() => {
         setButtonLoading(false);
@@ -35,24 +42,20 @@ export default function Component({sessionId}: {sessionId: string}) {
     setMounted(true);
   }, []);
 
-  const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
-
   if (!mounted) {
     return null;
   }
 
   return (
-    <nav className=" sticky top-0 z-40 backdrop-blur-md bg-white/75 dark:bg-black/75">
+    <nav className="sticky top-0 z-40 backdrop-blur-md bg-white/75 dark:bg-zinc-800/75">
       <div className="flex h-16 items-center px-4">
-        <div className="hidden sm:flex items-center space-x-4">
-          <BarChartIcon className="h-6 w-6 text-black dark:text-white" />
+        <div className="hidden sm:flex items-center gap-2">
+          <BrainCircuit className="h-6 w-6 text-black dark:text-white" />
           <span className="text-lg font-semibold text-black dark:text-white">
             Converse
           </span>
         </div>
-        <div className="flex items-center mx-auto">
+        <div className="flex items-center mr-auto ml-[32vw]">
           <Tabs aria-label="Options" className="h-full" size="lg">
             <Tab key="chat" title="Chat"></Tab>
             <Tab key="data" title="Data"></Tab>
@@ -60,23 +63,17 @@ export default function Component({sessionId}: {sessionId: string}) {
           </Tabs>
         </div>
         <div className="flex items-center space-x-4 gap-2">
+          <NightModeToggle />
           <Button
             aria-label="clear-history"
             onClick={clearHistory}
             isLoading={buttonLoading}
+            className="bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
           >
             {!buttonLoading && <Trash2 />}
             {buttonLabel}
           </Button>
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={theme === "dark"}
-              onValueChange={toggleTheme}
-              aria-label="Toggle dark mode"
-              startContent={<SunIcon className="h-[1.2rem] w-[1.2rem]" />}
-              endContent={<MoonIcon className="h-[1.2rem] w-[1.2rem]" />}
-            />
-          </div>
+          <div className="flex items-center space-x-2"></div>
         </div>
       </div>
     </nav>
