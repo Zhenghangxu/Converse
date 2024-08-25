@@ -34,7 +34,7 @@ export default function ChatInput({
         className="px-2 py-3 flex flex-row items-center gap-3"
       >
         <input
-          className="text-black resize-none box-border border-[2px] border-gray-500/20 dark:bg-zinc-700 hover:dark:bg-zinc-600 hover:bg-gray-200 max-h-[10vh] shadow-md dark:text-white bg-transparent rounded-3xl focus-visible:rounded-xl focus:border-[3px] focus:border-primary-500 focus-visible:outline-none w-full h-full py-3 px-5 transition-all"
+          className="text-black resize-none box-border border-[2px] border-gray-500/20 dark:bg-zinc-700 hover:dark:bg-zinc-600 hover:bg-gray-200 max-h-[10vh] shadow-md dark:text-white bg-transparent rounded-3xl focus-visible:rounded-xl focus:border-[3px] focus:border-primary-500/30 focus-visible:outline-none w-full h-full py-3 px-5 transition-all"
           onChange={handleInputChange}
           value={input}
           maxLength={3000}

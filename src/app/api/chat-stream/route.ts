@@ -5,7 +5,6 @@ import { NextRequest } from "next/server";
 export const POST = async (req: NextRequest) => {
   const { messages, sessionId } = await req.json();
   const lastMessage = messages[messages.length - 1].content;
-  console.log("lastMessage", lastMessage);
   const response = await ragChat.chat(lastMessage, {
     streaming: true,
     sessionId: sessionId,

@@ -8,7 +8,7 @@ import { UIContextProvider } from "./_context/ChatContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Converse",
+  title: process.env.NEXT_PUBLIC_APP_NAME,
   description: "Talk to Your Knowledge Base",
 };
 
