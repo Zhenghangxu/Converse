@@ -40,5 +40,7 @@ You can go to [Open FDA](https://open.fda.gov/data/downloads/) and download the 
 # Screenshot of UI
 
 ![image](https://github.com/user-attachments/assets/32685c04-8452-480f-ab1b-61a981193bf5)
+![image](https://github.com/user-attachments/assets/295bd460-0b15-443f-a72c-de28ce9aa8a1)
+
 
 
