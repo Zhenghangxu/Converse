@@ -12,6 +12,7 @@ Use this notebook as guide: [IPYDB](python/FDA-Dataset.ipynb)
 ## Getting Started
 First configure the credentials, check out the template env file provided (To be Upload) as a basic guidedance. You can also use your own db and LLM providers. 
 
+You also need to connect to a vector DB source.
 Just modify `database.ts`, `user-ts`, `rag-chat.ts` to define your own vendor, or use a local LLM / DB.
 
 Then, run the development server:
