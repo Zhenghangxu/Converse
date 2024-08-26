@@ -5,6 +5,10 @@ This is a Retrieval-Augmented Generation (RAG) chatbot with access to info of mo
 ## Disclaimer
 Please note this bot is not for medical advice. Only intended to used in research purpose
 
+## What If I just want the data?
+You can go to [Open FDA](https://open.fda.gov/data/downloads/) and download the JSON files.
+Use this notebook as guide: [IPYDB](python/FDA-Dataset.ipynb)
+
 ## Getting Started
 First configure the credentials, check out the template env file provided (To be Upload) as a basic guidedance. You can also use your own db and LLM providers. 
 
@@ -21,10 +25,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You would need to setup **Upstash** and **Toether AI** account to get started, but feel free to swap to other vendors
 
 You can start editing the pages by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-## What If I just want the data?
-You can go to [Open FDA](https://open.fda.gov/data/downloads/) and download the JSON files.
-Use this notebook as guide: [IPYDB](python/FDA-Dataset.ipynb)
 
 
 ## Tech Stack & APIs
