@@ -24,6 +24,7 @@ You can start editing the pages by modifying `app/page.tsx`. The page auto-updat
 
 ## What If I just want the data?
 You can go to [Open FDA](https://open.fda.gov/data/downloads/) and download the JSON files.
+Use this notebook as guide: [IPYDB](python/FDA-Dataset.ipynb)
 
 
 ## Tech Stack & APIs
