@@ -1,4 +1,4 @@
-This is a Retrieval-Augmented Generation (RAG) chatbot with access to info to more than 20,000 FDA-approved drugs, bootstraped with [Upstash RAG SDK](https://nextjs.org/) and [`Next.js`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a Retrieval-Augmented Generation (RAG) chatbot with access to info of more than 20,000 FDA-approved OTC drugs, bootstraped with [Upstash RAG SDK](https://upstash.com/docs/vector/sdks/rag-chat/gettingstarted) and [`Next.js`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 First configure the credentials, check out the template env file provided (To be Upload) as a basic guidedance. You can also use your own db and LLM providers. 
@@ -9,12 +9,6 @@ Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -23,11 +17,18 @@ You would need to setup **Upstash** and **Toether AI** account to get started, b
 
 You can start editing the pages by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## What If I just want the data?
+You can go to [Open FDA](https://open.fda.gov/data/downloads/) and download the JSON files.
+
 
 ## Tech Stack & APIs
 - Upstash Vector store for vector db
 - AWS Dynamodb for User DB
-- Upstash Redis for caching chat history
-- Toether AI's xxx model for chat functionality
+- Upstash Redis for caching chat history (To be migrated to AWS)
+- Lucia Auth for session management (WIP)
+- Next UI as component library
+- Vercel AI SDK for chat streaming and error handling
+- markdown-it for markdown formatting (to be polished)
+- `Meta-Llama-3-8B` for chat functionality, using together ai (To be migrated to AWS Bedrock)
 - (WIP) Semantic Router running on AWS Lamda to guardrail discussion and manage the attention (e.g. when to switch topic and when to referenece db)
 
