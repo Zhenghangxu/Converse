@@ -2,17 +2,19 @@
 import Image from "next/image";
 import React from "react";
 import { BrainCircuit } from "lucide-react";
-import SignUpForm from "@/components/SignUpForm";
 import { NightModeToggle } from "@/components/NightModeToggle";
+import Logo from "@/app/_asset/logo.svg"
 
 export default function Home({
-  logo,
+  logo = <Image src={Logo} alt="author-logo" priority/>,
   Name = "Converse",
   productLogo = <BrainCircuit className="size-10 text-black dark:text-white" />,
+  children,
 }: {
   logo?: React.ReactNode;
   Name?: string;
   productLogo?: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-white dark:bg-gray-900 dark:text-white text-black">
@@ -49,7 +51,7 @@ export default function Home({
         />
       </div>
       <div className="container my-[120px]">
-        <SignUpForm isNewUser={false} />
+        {children}
       </div>
       <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left"></div>
     </main>
