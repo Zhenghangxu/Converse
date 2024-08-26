@@ -2,6 +2,8 @@ This is a Retrieval-Augmented Generation (RAG) chatbot with access to info of mo
 
 <img width="1414" alt="image" src="https://github.com/user-attachments/assets/981b0165-365b-4bac-9799-0c654267a08d">
 
+## Disclaimer
+Please note this bot is not for medical advice. Only intended to used in research purpose
 
 ## Getting Started
 First configure the credentials, check out the template env file provided (To be Upload) as a basic guidedance. You can also use your own db and LLM providers. 
