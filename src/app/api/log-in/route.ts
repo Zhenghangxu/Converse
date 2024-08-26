@@ -1,7 +1,7 @@
 import { addUser } from "@/app/_controller/user";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, res: NextResponse) {
   const { email, password } = await req.json();
   const role = "user";
   return addUser({
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   })
     .then((res) =>
       NextResponse.json({
-        status: res.$metadata.httpStatusCode,
+        status: res.status,
       })
     )
     .catch((err) =>

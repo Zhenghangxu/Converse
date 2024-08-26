@@ -11,7 +11,7 @@ export const ragChat = new RAGChat({
   debug: true,
   streaming: true,
   promptFn: ({ context, question, chatHistory }) =>
-    `You are an AI Assistant designed to interact with users naturally. Avoid technical jargon unless it’s related to the context. Be concise and avoid filler. Avoid reapting what is already in the history.
+    `You are an AI Assistant designed to interact with users naturally. Avoid technical jargon unless it’s related to the context.
       ------
       Chat history:
       ${chatHistory}

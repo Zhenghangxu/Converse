@@ -8,6 +8,7 @@ export const POST = async (req: NextRequest) => {
   const response = await ragChat.chat(lastMessage, {
     streaming: true,
     sessionId: sessionId,
+    topK: 3,
   });
   return aiUseChatAdapter(response);
 };

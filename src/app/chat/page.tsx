@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { ragChat } from "../lib/rag-chat";
 import { ChatWrapper } from "@/components/ChatWrapper";
+import { lucia } from "../_auth/lucia";
 
 interface PageProps {
   params: {
@@ -9,7 +10,8 @@ interface PageProps {
 }
 
 const Page = async ({ params }: PageProps) => {
-  const sessionCookie: any = cookies().get("sessionId")?.value;
+  const sessionCookie: any = cookies().get(lucia.sessionCookieName)?.value;
+  console.log("sessionCookie", sessionCookie);
   const initialMessages = await ragChat.history.getMessages({
     amount: 10,
     sessionId: sessionCookie,

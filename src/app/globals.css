@@ -21,7 +21,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  @apply dark:bg-zinc-800 bg-zinc-200;
+  @apply dark:bg-zinc-800 bg-zinc-200 dark:text-white;
 }
 
 @layer utilities {

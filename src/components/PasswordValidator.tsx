@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Listbox, ListboxItem } from "@nextui-org/react";
 import { Check, X } from "lucide-react";
-import validate from "@/app/lib/validate";
 import { motion } from "framer-motion";
 const passwordValidator = require("password-validator");
+import { UIContext } from "@/app/_context/ChatContext";
 
 export interface PasswordValidatorProps {
   password: string;
@@ -17,25 +17,32 @@ const passwordRequirements = [
   { message: "No Spaces", validate: "spaces" },
 ];
 
-export default function PasswordValidator(props: PasswordValidatorProps) {
-  const schema = new passwordValidator();
-  schema
-    .is()
-    .min(8, passwordRequirements[0].message)
-    .is()
-    .max(100, passwordRequirements[1].message)
-    .has()
-    .uppercase(null, passwordRequirements[2].message)
-    .has()
-    .lowercase(null, passwordRequirements[3].message)
-    .has()
-    .digits(1, passwordRequirements[4].message)
-    .has()
-    .not()
-    .spaces(null, passwordRequirements[5].message);
+const schema = new passwordValidator();
+schema
+  .is()
+  .min(8, passwordRequirements[0].message)
+  .is()
+  .max(100, passwordRequirements[1].message)
+  .has()
+  .uppercase(null, passwordRequirements[2].message)
+  .has()
+  .lowercase(null, passwordRequirements[3].message)
+  .has()
+  .digits(1, passwordRequirements[4].message)
+  .has()
+  .not()
+  .spaces(null, passwordRequirements[5].message);
 
-  const validationResult = schema.validate(props.password, { details: true });
-  console.log(validationResult);
+export default function PasswordValidator(props: PasswordValidatorProps) {
+  // const [validationResult, setValidationResult] = React.useState<any>([]);
+  const pwdValue = props.password;
+  const { setIsPWInvalid } = React.useContext(UIContext);
+  const validationResult = schema.validate(pwdValue, { details: true });
+  if (validationResult.length === 0) {
+    setIsPWInvalid(false);
+  } else {
+    setIsPWInvalid(true);
+  }
   return (
     <div className="flex flex-col items-center justify-start">
       <div className="text-xl">

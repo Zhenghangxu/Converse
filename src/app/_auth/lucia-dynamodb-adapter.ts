@@ -1,13 +1,13 @@
-import { DatabaseUser, Lucia, Session, User } from "lucia";
+import { type DatabaseUser, Lucia, Session, User } from "lucia";
 import { DynamoDBAdapter } from "lucia-dynamodb-adapter";
-import { getUser } from "./user";
-import { DDClient } from "./database";
+import { getUser } from "../_controller/user";
+import { DDClient } from "../_controller/database";
 
 // Create a function to get a user from your own user table then pass it to the adapter as a Lucia user
-async function getAUser(userId: string): Promise<DatabaseUser | null> {
+async function getAUser(email: string): Promise<DatabaseUser | null> {
   //Get the user from your own user table
-  const result = await getUser(userId);
-  const user = result.Item;
+  const results = await getUser(email);
+  const user = results?.Items?.[0] as DatabaseUser;
 
   //If the user does not exist, return null
   if (!user) {
@@ -16,7 +16,7 @@ async function getAUser(userId: string): Promise<DatabaseUser | null> {
 
   //Return the user as a Lucia user. This example assumes that the attributes field has been customised to include a username. See more in this tutorial https://lucia-auth.com/tutorials/username-and-password/
   return {
-    id: (user.id) as unknown as string,
+    id: user.id,
     attributes: {
       email: user.email,
       role: user.role,
@@ -24,11 +24,12 @@ async function getAUser(userId: string): Promise<DatabaseUser | null> {
   };
 }
 
+
 //Create a new adapter with the required parameters
 export const adapter = new DynamoDBAdapter({
   client: DDClient,
   sessionTableName: "converse-sessions",
-  sessionUserIndexName: "converse-sessions-user-index",
+  sessionUserIndexName: "lucia-sessions-user-index",
   getUser: getAUser,
 });
 

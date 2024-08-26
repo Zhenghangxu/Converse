@@ -4,27 +4,40 @@ import {
   GetItemCommandInput,
   PutItemCommand,
   PutItemCommandInput,
+  type PutItemCommandOutput,
 } from "@aws-sdk/client-dynamodb";
 import { DDClient } from "./database";
+import {
+  GetCommand,
+  DynamoDBDocumentClient,
+  QueryCommand,
+} from "@aws-sdk/lib-dynamodb";
 import { uuid } from "../lib/uuid";
-const bcrypt = require("bcrypt");
+import { stat } from "fs";
+const bcrypt = require("bcryptjs");
+// import bcrypt from "bcrypt";
 
-export const saltRounds = 10;
+const saltRounds = bcrypt.genSaltSync(10);
 
-export const addUser = async (user: UserType) => {
+const docClient = DynamoDBDocumentClient.from(DDClient);
+
+export const addUser = async (
+  user: UserType
+): Promise<{ status: number; userOutput: any }> => {
+  const uuidString = uuid();
   const inputItemInput: PutItemCommandInput = {
     Item: {
       id: {
-        S: uuid(),
+        S: uuidString,
       },
       email: {
         S: user.email,
       },
       password: {
-        S: await bcrypt.hash(user.password, saltRounds),
+        S: await bcrypt.hashSync(user.password, saltRounds),
       },
-      name: {
-        S: user.name || "",
+      userName: {
+        S: user.userName || "",
       },
       role: {
         S: user.role,
@@ -33,13 +46,37 @@ export const addUser = async (user: UserType) => {
         S: new Date().getTime().toString(),
       },
     },
-    ConditionExpression:
-      "attribute_not_exists(id) AND attribute_not_exists(email)",
-    TableName: process.env.NEXT_PUBLIC_DYNAMODB_TABLE_NAME,
+    ConditionExpression: "attribute_not_exists(email)",
+    TableName: process.env.DYNAMODB_TABLE_NAME,
   };
   const command = new PutItemCommand(inputItemInput);
-  const response = await DDClient.send(command);
-  return response;
+  return await DDClient.send(command)
+    .then((data) => {
+      return {
+        status: (data as PutItemCommandOutput).$metadata
+          .httpStatusCode as number,
+        userOutput: {
+          email: user.email,
+          id: uuidString,
+          role: user.role,
+        },
+      };
+    })
+    .catch((err) => {
+      let statusCode: number;
+      if (err.__type.toString().includes("ConditionalCheckFailedException")) {
+        console.log("User already exists");
+        statusCode = 409;
+      } else {
+        statusCode = err.$metadata.httpStatusCode;
+        console.log("Unable to add item. Error:", err);
+      }
+      console.log("statusCode", statusCode);
+      return {
+        status: statusCode,
+        userOutput: null,
+      };
+    });
 };
 
 export const removeUser = async (uuid: string) => {};
@@ -48,20 +85,46 @@ export const logIn = async ({ email, password }: UserType) => {
   // 1. get user by email
   // 2. compared against hashed Pswd
   // 3. return result with a session id
+  const command = new GetCommand({
+    TableName: process.env.DYNAMODB_TABLE_NAME,
+    Key: {
+      email: email,
+    },
+  });
+  const response = await docClient.send(command);
+  console.log("response", response);
+  if (!response?.Item) {
+    return { status: 404, user: null };
+  }
+  const primaryItem = response?.Item;
+  const passwordHash = primaryItem?.password;
+  delete primaryItem?.password;
+  const isMatch = await bcrypt.compareSync(
+    password,
+    passwordHash as unknown as string
+  );
+  if (!isMatch) {
+    return { status: 401, user: null, error: "Password is incorrect" };
+  } else {
+    return { status: 200, user: primaryItem };
+  }
 };
 
 export const getUser = async (uuid: string) => {
-  // 1. get user by uuid
-  // 2. return user
-  const inputItemInput: GetItemCommandInput = {
-    Key: {
-      id: {
-        S: uuid,
-      },
+  const command = new QueryCommand({
+    TableName: process.env.DYNAMODB_TABLE_NAME,
+    KeyConditionExpression: "id = :id",
+    ExpressionAttributeValues: {
+      ":id": uuid,
     },
-    TableName: process.env.NEXT_PUBLIC_DYNAMODB_TABLE_NAME,
-  };
-  const command = new GetItemCommand(inputItemInput);
-  const response = await DDClient.send(command);
+    IndexName: "id-index",
+    ProjectionExpression: "email, #role, #id",
+    ExpressionAttributeNames: {
+      "#id": "id",
+      "#role": "role",
+    },
+  });
+  const response = await docClient.send(command);
+  console.log("USR-response", response);
   return response;
 };
