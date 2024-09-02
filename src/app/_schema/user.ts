@@ -1,4 +1,5 @@
 import { type DatabaseUser } from "lucia";
+import { User } from "lucide-react";
 export interface UserType {
   // observe how dynamo db assign metadata to the user object
   id?: string;
@@ -9,5 +10,6 @@ export interface UserType {
   // createdAt: Date;
   // updatedAt: Date;
 }
+export type UserOutputType = Omit<UserType, "password">;
 
 export interface UserInputType extends DatabaseUser {}

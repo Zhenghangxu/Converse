@@ -7,7 +7,7 @@ import { DDClient } from "../_controller/database";
 async function getAUser(email: string): Promise<DatabaseUser | null> {
   //Get the user from your own user table
   const results = await getUserbyId(email);
-  const user = results?.Items?.[0] as DatabaseUser;
+  const user = results?.Items?.[0];
 
   //If the user does not exist, return null
   if (!user) {
@@ -21,7 +21,7 @@ async function getAUser(email: string): Promise<DatabaseUser | null> {
       email: user.email,
       role: user.role,
     },
-  };
+  } as DatabaseUser;
 }
 
 

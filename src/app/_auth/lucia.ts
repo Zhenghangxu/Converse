@@ -1,7 +1,7 @@
 import { Lucia } from "lucia";
 import { adapter } from "./lucia-dynamodb-adapter";
 import { cookies } from "next/headers";
-import { UserType } from "../_schema/user";
+import { UserOutputType } from "../_schema/user";
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
@@ -16,7 +16,7 @@ export const lucia = new Lucia(adapter, {
 declare module "lucia" {
 	interface Register {
 		Lucia: typeof lucia;
-    DatabaseUserAttributes: UserType;
+    DatabaseUserAttributes: UserOutputType;
 	}
 }
 
