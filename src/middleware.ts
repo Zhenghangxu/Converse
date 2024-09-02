@@ -10,6 +10,10 @@ export async function middleware(req: NextRequest) {
   const chatURL = req.nextUrl.clone();
   chatURL.pathname = "/chat";
   const protectedRoutes = ["/api/clear-history", "/chat"];
+  // temporary fix for the issue of the user being redirected to the home page when they are already logged in
+  if (req.nextUrl.pathname === "/") {
+    return NextResponse.redirect("/start/log-in");
+  }
   if (protectedRoutes.includes(req.nextUrl.pathname)) {
     const { user} = await validateRequest();
     if (!user) {
