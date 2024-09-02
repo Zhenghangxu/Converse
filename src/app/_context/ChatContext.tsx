@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useState, Dispatch, SetStateAction } from "react";
+import {
+  createContext,
+  useState,
+  Dispatch,
+  SetStateAction,
+  useRef,
+  useEffect,
+} from "react";
 
 type UIContextType = {
   isLoggedIn: boolean;
@@ -22,6 +29,7 @@ export const UIContextProvider = ({
   const [chatState, setChatState] = useState<string>("Ready");
   const [isPWInvalid, setIsPWInvalid] = useState<boolean>(false);
 
+
   return (
     <UIContext.Provider
       value={{
@@ -30,7 +38,7 @@ export const UIContextProvider = ({
         chatState,
         setChatState,
         isPWInvalid,
-        setIsPWInvalid
+        setIsPWInvalid,
       }}
     >
       {children}

@@ -6,6 +6,8 @@ import NavBar from "@/components/navBar";
 import ChatInput from "./ChatInput";
 import { UIContext } from "@/app/_context/ChatContext";
 
+
+
 export const ChatWrapper = ({
   sessionId,
   initialMessages,
@@ -14,8 +16,8 @@ export const ChatWrapper = ({
   initialMessages: any[];
 }) => {
   // const [chatState, setChatState] = useState("Ready");
+  const inputHeight = 55;
   const { chatState, setChatState } = useContext(UIContext);
-  const inputHeight = 120;
   const {
     messages,
     handleInputChange,
@@ -54,24 +56,25 @@ export const ChatWrapper = ({
     <div className="relative min-h-full dark:bg-zinc-800 bg-zinc-200 flex  flex-col justify-between">
       <NavBar sessionId={sessionId} reloadChat={reload} />
       <div
-        className={`flex-1 text-black dark:bg-zinc-800 bg-gray-100 justify-between flex flex-col`}
+        className={`flex-1 text-black dark:bg-zinc-800 bg-gray-100 justify-between flex flex-col h-screen`}
         style={{
-          paddingBottom: `${inputHeight * 1.1}px`,
+          paddingBottom: `${inputHeight * 1.3}px`,
         }}
       >
         <Messages messages={messages} />
       </div>
       <div
-        className={`w-full fixed max-h-[72px] bottom-0 left-0 right-0 bg-gray-100/75 dark:bg-zinc-800/75 backdrop-blur-md`}
+        className={`w-full fixed bottom-0 left-0 right-0 bg-gray-100/75 dark:bg-zinc-800/75 backdrop-blur-md z-10`}
         style={{
           maxHeight: `${inputHeight * 1.3}px`,
         }}
       >
-        <div className="container mx-auto ">
+        <div className="container mx-auto h-full">
           {/* insert here */}
           <ChatInput
             chatState={chatState}
             input={input}
+            inputHeight={inputHeight}
             handleInputChange={handleInputChange}
             handleSubmit={handleSubmit}
           />

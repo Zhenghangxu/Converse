@@ -1,12 +1,12 @@
 import { type DatabaseUser, Lucia, Session, User } from "lucia";
 import { DynamoDBAdapter } from "lucia-dynamodb-adapter";
-import { getUser } from "../_controller/user";
+import { getUserbyId } from "../_controller/user";
 import { DDClient } from "../_controller/database";
 
 // Create a function to get a user from your own user table then pass it to the adapter as a Lucia user
 async function getAUser(email: string): Promise<DatabaseUser | null> {
   //Get the user from your own user table
-  const results = await getUser(email);
+  const results = await getUserbyId(email);
   const user = results?.Items?.[0] as DatabaseUser;
 
   //If the user does not exist, return null

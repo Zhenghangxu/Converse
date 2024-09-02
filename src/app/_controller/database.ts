@@ -16,8 +16,8 @@ export const TestConnection = async () => {
   const command = new ListTablesCommand({});
   const response = await DDClient.send(command)
     .then(() => {
-      console.log("Connection To AWS Resource Successful!");
-      console.log(response.TableNames?.join("\n"));
+      // console.log("Connection To AWS Resource Successful!");
+      // console.log(response.TableNames?.join("\n"));
       return "success";
     })
     .catch((err) => err);

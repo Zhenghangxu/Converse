@@ -14,6 +14,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { uuid } from "../lib/uuid";
 import { stat } from "fs";
+import { sign } from "crypto";
 const bcrypt = require("bcryptjs");
 // import bcrypt from "bcrypt";
 
@@ -64,12 +65,13 @@ export const addUser = async (
     })
     .catch((err) => {
       let statusCode: number;
-      if (err.__type.toString().includes("ConditionalCheckFailedException")) {
+
+      if (err.__type?.toString()?.includes("ConditionalCheckFailedException")) {
         console.log("User already exists");
         statusCode = 409;
       } else {
         statusCode = err.$metadata.httpStatusCode;
-        console.log("Unable to add item. Error:", err);
+        // console.log("Unable to add item. Error:", err);
       }
       console.log("statusCode", statusCode);
       return {
@@ -92,7 +94,7 @@ export const logIn = async ({ email, password }: UserType) => {
     },
   });
   const response = await docClient.send(command);
-  console.log("response", response);
+  // console.log("response", response);
   if (!response?.Item) {
     return { status: 404, user: null };
   }
@@ -110,7 +112,18 @@ export const logIn = async ({ email, password }: UserType) => {
   }
 };
 
-export const getUser = async (uuid: string) => {
+export const getUserbyEmail = async (email: string) => {
+  const command = new GetCommand({
+    TableName: process.env.DYNAMODB_TABLE_NAME,
+    Key: {
+      email: email,
+    },
+  });
+  const response = await docClient.send(command);
+  return response;
+}
+
+export const getUserbyId = async (uuid: string) => {
   const command = new QueryCommand({
     TableName: process.env.DYNAMODB_TABLE_NAME,
     KeyConditionExpression: "id = :id",

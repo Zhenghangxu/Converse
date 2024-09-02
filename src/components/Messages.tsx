@@ -21,8 +21,8 @@ export const Messages = ({ messages }: MessageProps) => {
         const lastMessageY = lastMessage.getBoundingClientRect().top;
         const windowHeight = window.innerHeight;
         if (lastMessageY > 0.6 * windowHeight) {
-          lastMessage.scrollIntoView();
-          current.scrollBy(0, 100);
+          lastMessage.scrollIntoView(true);
+          // current.scrollBy(0, 100);
         }
       }
     }

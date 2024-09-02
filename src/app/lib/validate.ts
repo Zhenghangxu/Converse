@@ -4,7 +4,7 @@ type FieldTypes = {
 
 const fieldTypes: Record<string, FieldTypes> = {
   email: {
-    regex: "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+    regex: "^[^\\s@]+@[^\\s@]+.[^\\s@]+$",
   },
 };
 

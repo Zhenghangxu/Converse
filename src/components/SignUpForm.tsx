@@ -12,23 +12,26 @@ import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { Icon } from "@iconify/react";
 import validate from "@/app/lib/validate";
 import PasswordValidator from "./PasswordValidator";
-import { signUp } from "@/app/actions";
+import { logIn } from "@/app/_action/LogIn";
+import { signUp } from "@/app/_action/signUp";
 import { useFormState } from "react-dom";
-import { type returnData } from "@/app/actions";
 import { useRouter } from "next/navigation";
 import { UIContext } from "@/app/_context/ChatContext";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 export interface SignUpFormProps {
   isNewUser?: boolean;
 }
 
-const initialState: returnData = {
+const initialState = {
   userOutput: null,
   // custom status code for initial state
   status: 900,
 };
 
 export default function SignUpForm({ isNewUser = false }: SignUpFormProps) {
+  const contextFormAction = isNewUser ? signUp : logIn;
   const { isPWInvalid } = React.useContext(UIContext);
   const [emailValue, setEmailValue] = React.useState("");
   const [isEmailInvalid, setIsEmailInvalid] = React.useState(false);
@@ -39,13 +42,11 @@ export default function SignUpForm({ isNewUser = false }: SignUpFormProps) {
   const [showWarningMsg, setShowWarningMsg] = React.useState(false);
   // loading
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
-  // error
-  const [isError, setIsError] = React.useState(false);
+
   // success
-  const [isSuccess, setIsSuccess] = React.useState(false);
   // const isInvalid = validate(emailValue, "email");
   // sumit
-  const [formState, formAction] = useFormState(signUp, initialState);
+  const [formState, formAction] = useFormState(contextFormAction, initialState);
   const router = useRouter();
   const showWarning = () => {
     setShowWarningMsg(true);
@@ -53,6 +54,14 @@ export default function SignUpForm({ isNewUser = false }: SignUpFormProps) {
       setShowWarningMsg(false);
     }, 2000);
   };
+  // state controller
+  const warnEmail = () => {
+    setIsEmailInvalid(true);
+    setTimeout(() => {
+      setIsEmailInvalid(false);
+    }, 2000);
+  };
+
   React.useEffect(() => {
     if (formState.status === 900) {
       // start loading
@@ -60,33 +69,40 @@ export default function SignUpForm({ isNewUser = false }: SignUpFormProps) {
     }
     if (formState.status === 200 || formState.status === 800) {
       console.log("User signed up successfully");
-      setIsButtonLoading(false);
-      setIsSuccess(true);
       // client-side redirect
       router.push("/chat");
     }
     if (formState.status === 500) {
       console.log("User signup failed");
       setIsButtonLoading(false);
-      setIsError(true);
       setErrorMsg("Oops! Something went wrong on our end. Please try again.");
       showWarning();
     }
     if (formState.status === 409) {
       console.log("User already exists");
       setIsButtonLoading(false);
-      setIsError(true);
       setErrorMsg("Looks like you already have an account. Please log in.");
       showWarning();
     }
-  }, [formState]);
+    if (formState.status === 401) {
+      setIsButtonLoading(false);
+      setErrorMsg("Hey, Please check your email or password.");
+      showWarning();
+    }
+    if (formState.status === 404) {
+      setIsButtonLoading(false);
+      setErrorMsg("User not found. Please sign up first.");
+      showWarning();
+    }
+  }, [formState, router]);
 
   return (
     <form
       action={formAction}
+      className="w-full"
       onSubmit={(e) => {
         setIsButtonLoading(true);
-        if (isEmailInvalid || isPWInvalid) {
+        if (isEmailInvalid || (isPWInvalid && isNewUser)) {
           setIsButtonLoading(false);
           setErrorMsg("Hey, Please check your email or password.");
           showWarning();
@@ -94,13 +110,15 @@ export default function SignUpForm({ isNewUser = false }: SignUpFormProps) {
         }
       }}
     >
-      <div className="max-w-md mx-auto flex flex-col gap-4 items-center">
+      <div className="max-w-md w-full flex flex-col gap-4 items-center mx-auto lg:mx-0">
         <Input
           value={emailValue}
           type="email"
           name="email"
           onValueChange={setEmailValue}
-          onBlur={() => setIsEmailInvalid(!validate(emailValue, "email"))}
+          onBlur={() => {
+            validate(emailValue, "email") ? setIsEmailInvalid(false) : warnEmail();
+          }}
           label="Email"
           variant="bordered"
           color={isEmailInvalid ? "danger" : "default"}
@@ -118,7 +136,9 @@ export default function SignUpForm({ isNewUser = false }: SignUpFormProps) {
           type={isPWVisible ? "text" : "password"}
           size="lg"
           endContent={
-            <button
+            <motion.button
+              layout
+              animate={{ scale: [0.5, 1] }}
               className="focus:outline-none flex h-full items-center justify-center"
               type="button"
               onClick={() => {
@@ -131,14 +151,10 @@ export default function SignUpForm({ isNewUser = false }: SignUpFormProps) {
               ) : (
                 <Eye className="text-2xl text-default-400 pointer-events-none" />
               )}
-            </button>
+            </motion.button>
           }
         />
-        {isNewUser && (
-          <PasswordValidator
-            password={PWvalue}
-          />
-        )}
+        {isNewUser && <PasswordValidator password={PWvalue} />}
         <Popover
           isOpen={showWarningMsg}
           placement="bottom"
@@ -146,18 +162,24 @@ export default function SignUpForm({ isNewUser = false }: SignUpFormProps) {
           showArrow
         >
           <PopoverTrigger>
-            <Button
-              color="primary"
-              type="submit"
-              aria-label="submit"
-              size="lg"
-              className="my-5"
-              isLoading={isButtonLoading}
-              // For some reason adding onClick would nullify the form action
+            <motion.div
+              layout
+              animate={{ scale: [0.5, 1] }}
+              transition={{ duration: 0.3 }}
             >
-              {isNewUser ? "Sign Up" : "Log In"}
-              <ArrowRight />
-            </Button>
+              <Button
+                color="primary"
+                type="submit"
+                aria-label="submit"
+                size="lg"
+                className="my-5"
+                isLoading={isButtonLoading}
+                // For some reason adding onClick would nullify the form action
+              >
+                {isNewUser ? "Sign Up" : "Log In"}
+                <ArrowRight />
+              </Button>
+            </motion.div>
           </PopoverTrigger>
           <PopoverContent>
             <div className="px-1 py-2 text-black dark:text-white">
@@ -169,17 +191,15 @@ export default function SignUpForm({ isNewUser = false }: SignUpFormProps) {
         {!isNewUser && (
           <>
             <Divider className="w-40" />
-            <Button
-              color="default"
-              aria-label="login-with-microsoft"
-              size="lg"
-              className="my-5"
-              variant="ghost"
-            >
-              Microsoft Login
-              <Icon icon="logos:microsoft-icon" />
-            </Button>
+            <Link href="/start/sign-up" className="high-light-link p-2">
+              Don&apos;t have an account?
+            </Link>
           </>
+        )}
+        {isNewUser && (
+          <Link href="/start/log-in" className="high-light-link p-2">
+            Already have an account?
+          </Link>
         )}
       </div>
     </form>

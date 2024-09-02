@@ -1,26 +1,34 @@
 import { Icon } from "@iconify/react";
 import { marked } from "marked";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DOMPurify from "dompurify";
+import { motion } from "framer-motion";
 
 interface MessageProps {
   content: string;
   isUserMessage: boolean;
 }
-export const Message = ({ content, isUserMessage}: MessageProps) => {
-  const [parsedHTML, setParsedHTML] = useState("Parsing HTML...");
+
+marked.use({
+  async: true,
+  gfm: true,
+  breaks: false,
+});
+
+export const Message = ({ content, isUserMessage }: MessageProps) => {
+  const [parsedHTML, setParsedHTML] = useState("");
   useEffect(() => {
     (async () => {
-      const html = await marked(content);
+      const html = await marked.parse(content);
       const cleaned = DOMPurify.sanitize(html);
       setParsedHTML(cleaned);
     })();
   }, [content]);
   useEffect(() => {
-    // 1. check if 
+    // 1. check if
   }, []);
   return (
-    <div className={"p-6"}>
+    <div className={"p-6 message"}>
       <div
         className={`max-w-3xl mx-auto flex items-start justify-start ${
           isUserMessage ? "flex-row-reverse" : ""
