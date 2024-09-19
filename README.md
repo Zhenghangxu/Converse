@@ -37,7 +37,8 @@ You can start editing the pages by modifying `app/page.tsx`. The page auto-updat
 - Vercel AI SDK for chat streaming and error handling
 - markdown-it for markdown formatting (to be polished)
 - `Meta-Llama-3-8B` for chat functionality, using together ai (To be migrated to AWS Bedrock)
-- (WIP) Semantic Router running on AWS Lamda to guardrail discussion and manage the attention (e.g. when to switch topic and when to referenece db)
+- Rewrite Agent to manage Context and Decide if vector search should be triggered.
+- (WIP) Semantic Router running on AWS Lamda to guardrail discussion
 
 # Screenshot of UI
 
